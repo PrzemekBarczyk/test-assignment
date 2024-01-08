@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// Used to follow selected leader
 /// </summary>
-public class CameraController : MonoBehaviour
+public class CameraController : MonoBehaviour, IPersistent
 {
     [SerializeField] private CharacterManager _characterManager;
 
@@ -30,6 +30,19 @@ public class CameraController : MonoBehaviour
             Vector3 smoothedPosition = Vector3.Lerp(transform.position, leaderPosition + _offsetToLeader, _smoothness * Time.deltaTime);
 
             transform.position = smoothedPosition;
+        }
+    }
+
+    public void SaveData(GamePersistentData persistentData)
+    {
+        persistentData.CameraPosition = transform.position;
+    }
+
+    public void LoadData(GamePersistentData persistentData)
+    {
+        if (persistentData != null && persistentData.CameraPosition != null)
+        {
+            transform.position = persistentData.CameraPosition;
         }
     }
 }
