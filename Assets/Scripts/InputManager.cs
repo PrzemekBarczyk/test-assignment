@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// Checks for user input and responds to it
@@ -28,7 +29,7 @@ public class InputManager : MonoBehaviour
 
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit) && !EventSystem.current.IsPointerOverGameObject())
         {
             if (hit.collider.CompareTag(_groundTag))
             {
