@@ -9,6 +9,9 @@ public class Character : MonoBehaviour
 {
     [SerializeField] private GameObject _indicator;
 
+    [SerializeField] float _stoppingDistanceAsLeader = 0;
+    [SerializeField] float _stoppingDistanceAsFollower = 3;
+
     private NavMeshAgent _navMeshAgent;
 
     private Transform _leaderToFollow;
@@ -34,12 +37,14 @@ public class Character : MonoBehaviour
     public void LeadGroup(Vector3 destination)
     {
         _leaderToFollow = null;
+        _navMeshAgent.stoppingDistance = _stoppingDistanceAsLeader;
         _navMeshAgent.SetDestination(destination);
     }
 
     public void FollowLeader(Transform leader)
     {
         _leaderToFollow = leader;
+        _navMeshAgent.stoppingDistance = _stoppingDistanceAsFollower;
     }
 
     public void Highlight(bool value)
