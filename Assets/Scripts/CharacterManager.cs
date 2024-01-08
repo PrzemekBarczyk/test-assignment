@@ -1,9 +1,10 @@
+using System;
 using UnityEngine;
 
 /// <summary>
 /// Stores all characters and allows to move them
 /// </summary>
-public class CharacterManager : MonoBehaviour
+public class CharacterManager : MonoBehaviour, IPersistent
 {
     public Character[] Characters { get; private set; }
     public Character Leader { get; private set; }
@@ -35,9 +36,9 @@ public class CharacterManager : MonoBehaviour
 
     private void RandomizeParams()
     {
-        _groupSpeed = Random.Range(MIN_SPEED, MAX_SPEED);
-        _groupAngularSpeed = Random.Range(MIN_ANGULAR_SPEED, MAX_ANGULAR_SPEED);
-        _groupAcceleration = Random.Range(MIN_ACCELERATION, MAX_ACCELERATION);
+        _groupSpeed = UnityEngine.Random.Range(MIN_SPEED, MAX_SPEED);
+        _groupAngularSpeed = UnityEngine.Random.Range(MIN_ANGULAR_SPEED, MAX_ANGULAR_SPEED);
+        _groupAcceleration = UnityEngine.Random.Range(MIN_ACCELERATION, MAX_ACCELERATION);
     }
 
     private void SetParamsInCharacters()
@@ -83,6 +84,27 @@ public class CharacterManager : MonoBehaviour
                 {
                     character.FollowLeader(Leader.transform);
                 }
+            }
+        }
+    }
+
+    public void SaveData(GamePersistentData persistentData)
+    {
+        if (Leader)
+        {
+            persistentData.LeaderName = Leader.name;
+        }
+    }
+
+    public void LoadData(GamePersistentData persistentData)
+    {
+        if (persistentData  != null && persistentData.LeaderName != null)
+        {
+            Leader = Array.Find(Characters, c => c.name == persistentData.LeaderName);
+
+            if (Leader)
+            {
+                SelectLeader(Leader);
             }
         }
     }
