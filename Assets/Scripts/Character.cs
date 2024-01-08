@@ -5,7 +5,7 @@ using UnityEngine.AI;
 /// Represents single character
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
-public class Character : MonoBehaviour
+public class Character : MonoBehaviour, IPersistent
 {
     [SerializeField] private GameObject _indicator;
 
@@ -50,5 +50,25 @@ public class Character : MonoBehaviour
     public void Highlight(bool value)
     {
         _indicator.SetActive(value);
+    }
+
+    public void SaveData(GamePersistentData gamePersistentData)
+    {
+        CharacterPersistentDataWrapper characterPersistentData = new CharacterPersistentDataWrapper(name, transform.position, transform.rotation);
+
+        gamePersistentData.Characters.Add(characterPersistentData);
+    }
+
+    public void LoadData(GamePersistentData gamePersistenetData)
+    {
+        if (gamePersistenetData != null && gamePersistenetData.Characters != null)
+        {
+            CharacterPersistentDataWrapper data = gamePersistenetData.Characters.Find(c => c.Name == name);
+
+            transform.position = data.Position;
+            transform.rotation = data.Rotation;
+
+            _navMeshAgent.ResetPath();
+        }
     }
 }
