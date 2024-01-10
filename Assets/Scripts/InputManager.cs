@@ -10,6 +10,7 @@ public class InputManager : MonoBehaviour
     [SerializeField] string _groundTag = "Ground";
 
     [SerializeField] CharacterManager _characterManager;
+    [SerializeField] ObjectPooler _groupDestinationIndicatorsPool;
 
     private void Update()
     {
@@ -53,8 +54,9 @@ public class InputManager : MonoBehaviour
 
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit))
+        if (_characterManager.Leader && Physics.Raycast(ray, out hit))
         {
+            _groupDestinationIndicatorsPool.GetObjectFromPool(hit.point);
             _characterManager.MoveGroup(hit.point);
         }
     }

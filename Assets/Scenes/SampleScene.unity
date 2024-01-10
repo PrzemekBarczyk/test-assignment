@@ -2575,6 +2575,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1422093224}
   - component: {fileID: 1422093225}
+  - component: {fileID: 1422093226}
   m_Layer: 0
   m_Name: Input Manager
   m_TagString: Untagged
@@ -2612,6 +2613,21 @@ MonoBehaviour:
   _characterTag: Character
   _groundTag: Ground
   _characterManager: {fileID: 1013946048}
+  _groupDestinationIndicatorsPool: {fileID: 1422093226}
+--- !u!114 &1422093226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1422093223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52c47b2c3c25d604f8009e73ecf704b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _objectPrefab: {fileID: 3006259544697844939, guid: b75e1018e7f09904296f2a0a6978f84e, type: 3}
+  _poolSize: 10
 --- !u!1001 &1524120098
 PrefabInstance:
   m_ObjectHideFlags: 0
