@@ -11,6 +11,8 @@ public class CameraController : MonoBehaviour, IPersistent
 
     private Vector3 _offsetToLeader;
 
+    private Vector3 _currentVelecity;
+
     private void Start()
     {
         _offsetToLeader = transform.position;
@@ -27,7 +29,7 @@ public class CameraController : MonoBehaviour, IPersistent
         {
             Vector3 leaderPosition = _characterManager.Leader.transform.position;
 
-            Vector3 smoothedPosition = Vector3.Lerp(transform.position, leaderPosition + _offsetToLeader, _smoothness * Time.deltaTime);
+            Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, leaderPosition + _offsetToLeader, ref _currentVelecity, _smoothness);
 
             transform.position = smoothedPosition;
         }
