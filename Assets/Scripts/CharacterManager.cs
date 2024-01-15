@@ -93,6 +93,9 @@ public class CharacterManager : MonoBehaviour, IPersistent
         if (Leader)
         {
             persistentData.LeaderName = Leader.name;
+            persistentData.GroupSpeed = _groupSpeed;
+            persistentData.GroupAngularSpeed = _groupAngularSpeed;
+            persistentData.GroupAcceleration = _groupAcceleration;
         }
     }
 
@@ -106,6 +109,10 @@ public class CharacterManager : MonoBehaviour, IPersistent
             {
                 SelectLeader(Leader);
             }
+
+            _groupSpeed = persistentData.GroupSpeed;
+            _groupAngularSpeed = persistentData.GroupAngularSpeed;
+            _groupAcceleration = persistentData.GroupAcceleration;
         }
     }
 }

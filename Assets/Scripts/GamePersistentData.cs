@@ -4,18 +4,15 @@ using UnityEngine;
 [System.Serializable]
 public class GamePersistentData
 {
-    public List<CharacterPersistentDataWrapper> Characters;
-    public string LeaderName;
+    // character data
+    public List<CharacterPersistentDataWrapper> Characters = new List<CharacterPersistentDataWrapper>();
+    public string LeaderName = "";
+    public int GroupSpeed;
+    public int GroupAngularSpeed;
+    public int GroupAcceleration;
 
-    public Vector3 CameraPosition;
-
-    public GamePersistentData()
-    {
-        Characters = new List<CharacterPersistentDataWrapper>();
-        LeaderName = "";
-
-        CameraPosition = Vector3.zero;
-    }
+    // camera data
+    public Vector3 CameraPosition = Vector3.zero;
 }
 
 [System.Serializable]
