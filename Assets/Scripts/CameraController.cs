@@ -1,21 +1,24 @@
 using UnityEngine;
 
 /// <summary>
-/// Used to follow selected leader
+/// Controls the camera to follow a selected leader character smoothly.
+/// Implements the IPersistent interface for saving and loading camera position
 /// </summary>
 public class CameraController : MonoBehaviour, IPersistent
 {
     [SerializeField] private CharacterManager _characterManager;
 
-    [SerializeField] private float _smoothness = 2f;
+    [SerializeField][Range(0f, 1f)] private float _smoothness = 0.3f;
 
-    private Vector3 _offsetToLeader;
+    private Vector3 _initialOffset;
 
     private Vector3 _currentVelecity;
 
     private void Start()
     {
-        _offsetToLeader = transform.position;
+        _initialOffset = transform.position;
+
+        if (_characterManager == null) Debug.LogError("Character manager is null");
     }
 
     private void LateUpdate()
@@ -29,15 +32,19 @@ public class CameraController : MonoBehaviour, IPersistent
         {
             Vector3 leaderPosition = _characterManager.Leader.transform.position;
 
-            Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, leaderPosition + _offsetToLeader, ref _currentVelecity, _smoothness);
+            Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, leaderPosition + _initialOffset, ref _currentVelecity, _smoothness);
 
             transform.position = smoothedPosition;
         }
     }
 
+    #region IPersistent Implementation
     public void SaveData(GamePersistentData persistentData)
     {
-        persistentData.CameraPosition = transform.position;
+        if (persistentData != null)
+        {
+            persistentData.CameraPosition = transform.position;
+        }
     }
 
     public void LoadData(GamePersistentData persistentData)
@@ -47,4 +54,5 @@ public class CameraController : MonoBehaviour, IPersistent
             transform.position = persistentData.CameraPosition;
         }
     }
+    #endregion
 }

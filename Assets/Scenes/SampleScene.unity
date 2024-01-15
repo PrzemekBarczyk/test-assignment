@@ -1853,7 +1853,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterManager: {fileID: 1013946048}
-  _smoothness: 2
+  _smoothness: 0.3
 --- !u!1 &980278917
 GameObject:
   m_ObjectHideFlags: 0
