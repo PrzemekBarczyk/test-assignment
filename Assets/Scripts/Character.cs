@@ -65,10 +65,11 @@ public class Character : MonoBehaviour, IPersistent
         {
             CharacterPersistentDataWrapper data = gamePersistenetData.Characters.Find(c => c.Name == name);
 
+            _navMeshAgent.velocity = Vector3.zero;
+            _navMeshAgent.ResetPath();
+
             transform.position = data.Position;
             transform.rotation = data.Rotation;
-
-            _navMeshAgent.ResetPath();
         }
     }
 }

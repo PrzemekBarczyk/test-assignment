@@ -105,13 +105,17 @@ public class CharacterManager : MonoBehaviour, IPersistent
     {
         if (persistentData != null && persistentData.LeaderName != null)
         {
-            Leader = Array.Find(Characters, c => c.name == persistentData.LeaderName);
+            DeselectLeader();
 
-            if (Leader) SelectLeader(Leader);
+            Character loadedLeader = Array.Find(Characters, c => c.name == persistentData.LeaderName);
+
+            if (loadedLeader) SelectLeader(loadedLeader);
 
             _groupSpeed = persistentData.GroupSpeed;
             _groupAngularSpeed = persistentData.GroupAngularSpeed;
             _groupAcceleration = persistentData.GroupAcceleration;
+
+            SetParamsInCharacters();
         }
     }
     #endregion
