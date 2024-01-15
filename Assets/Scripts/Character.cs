@@ -2,12 +2,12 @@ using UnityEngine;
 using UnityEngine.AI;
 
 /// <summary>
-/// Represents single character
+/// Represents a single character with navigation capabilities
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 public class Character : MonoBehaviour, IPersistent
 {
-    [SerializeField] private GameObject _indicator;
+    [SerializeField] private GameObject _selectionIndicator;
 
     [SerializeField] float _stoppingDistanceAsLeader = 0;
     [SerializeField] float _stoppingDistanceAsFollower = 3;
@@ -23,8 +23,7 @@ public class Character : MonoBehaviour, IPersistent
 
     void Update()
     {
-        if (_leaderToFollow)
-            _navMeshAgent.SetDestination(_leaderToFollow.position);
+        if (_leaderToFollow) _navMeshAgent.SetDestination(_leaderToFollow.position);
     }
 
     public void SetNavMeshParams(float speed, float angularSpeed, float acceleration)
@@ -45,25 +44,30 @@ public class Character : MonoBehaviour, IPersistent
     {
         _leaderToFollow = leader;
         _navMeshAgent.stoppingDistance = _stoppingDistanceAsFollower;
+        _navMeshAgent.SetDestination(_leaderToFollow.position);
     }
 
     public void Highlight(bool value)
     {
-        _indicator.SetActive(value);
+        _selectionIndicator.SetActive(value);
     }
 
+    #region IPersistent Implementation
     public void SaveData(GamePersistentData gamePersistentData)
     {
-        CharacterPersistentDataWrapper characterPersistentData = new CharacterPersistentDataWrapper(name, transform.position, transform.rotation);
+        if (gamePersistentData.Characters != null)
+        {
+            CharacterPersistentDataWrapper characterPersistentData = new CharacterPersistentDataWrapper(name, transform.position, transform.rotation);
 
-        gamePersistentData.Characters.Add(characterPersistentData);
+            gamePersistentData.Characters.Add(characterPersistentData);
+        }
     }
 
-    public void LoadData(GamePersistentData gamePersistenetData)
+    public void LoadData(GamePersistentData gamePersistentData)
     {
-        if (gamePersistenetData != null && gamePersistenetData.Characters != null)
+        if (gamePersistentData != null && gamePersistentData.Characters != null)
         {
-            CharacterPersistentDataWrapper data = gamePersistenetData.Characters.Find(c => c.Name == name);
+            CharacterPersistentDataWrapper data = gamePersistentData.Characters.Find(c => c.Name == name);
 
             _navMeshAgent.velocity = Vector3.zero;
             _navMeshAgent.ResetPath();
@@ -72,4 +76,5 @@ public class Character : MonoBehaviour, IPersistent
             transform.rotation = data.Rotation;
         }
     }
+    #endregion
 }
