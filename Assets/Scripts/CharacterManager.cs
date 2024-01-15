@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// Stores all characters and allows to move them
+/// Manages a group of characters and facilitates their movement
 /// </summary>
 public class CharacterManager : MonoBehaviour, IPersistent
 {
@@ -22,7 +22,7 @@ public class CharacterManager : MonoBehaviour, IPersistent
     private const int MIN_ACCELERATION = 5;
     private const int MAX_ACCELERATION = 10;
 
-    void Start()
+    private void Start()
     {
         FindCharacters();
         RandomizeParams();
@@ -57,15 +57,15 @@ public class CharacterManager : MonoBehaviour, IPersistent
 
             if (previousLeader) previousLeader.Highlight(false);
 
-            newLeader.Highlight(true);
-
             Leader = newLeader;
+
+            Leader.Highlight(true);
         }
     }
 
     public void DeselectLeader()
     {
-        if (Leader) // leader is selected
+        if (Leader)
         {
             Leader.Highlight(false);
             Leader = null;
@@ -74,7 +74,7 @@ public class CharacterManager : MonoBehaviour, IPersistent
 
     public void MoveGroup(Vector3 newPosition)
     {
-        if (Leader) // leader is selected
+        if (Leader)
         {
             Leader.LeadGroup(newPosition);
 
@@ -88,11 +88,13 @@ public class CharacterManager : MonoBehaviour, IPersistent
         }
     }
 
+    #region IPersistent Implementation
     public void SaveData(GamePersistentData persistentData)
     {
-        if (Leader)
+        if (persistentData != null && Leader)
         {
             persistentData.LeaderName = Leader.name;
+
             persistentData.GroupSpeed = _groupSpeed;
             persistentData.GroupAngularSpeed = _groupAngularSpeed;
             persistentData.GroupAcceleration = _groupAcceleration;
@@ -101,18 +103,16 @@ public class CharacterManager : MonoBehaviour, IPersistent
 
     public void LoadData(GamePersistentData persistentData)
     {
-        if (persistentData  != null && persistentData.LeaderName != null)
+        if (persistentData != null && persistentData.LeaderName != null)
         {
             Leader = Array.Find(Characters, c => c.name == persistentData.LeaderName);
 
-            if (Leader)
-            {
-                SelectLeader(Leader);
-            }
+            if (Leader) SelectLeader(Leader);
 
             _groupSpeed = persistentData.GroupSpeed;
             _groupAngularSpeed = persistentData.GroupAngularSpeed;
             _groupAcceleration = persistentData.GroupAcceleration;
         }
     }
+    #endregion
 }
