@@ -51,16 +51,12 @@ public class CharacterManager : MonoBehaviour, IPersistent
 
     public void SelectLeader(Character newLeader)
     {
-        if (newLeader)
-        {
-            Character previousLeader = Leader;
+        if (ObjectValidator.IsObjectNull(newLeader, "New leader is null")) return;
 
-            if (previousLeader) previousLeader.Highlight(false);
+        DeselectLeader(); // make sure previous leader is unselected
 
-            Leader = newLeader;
-
-            Leader.Highlight(true);
-        }
+        newLeader.Highlight(true);
+        Leader = newLeader;
     }
 
     public void DeselectLeader()
