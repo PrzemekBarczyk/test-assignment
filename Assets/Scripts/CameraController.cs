@@ -44,8 +44,12 @@ public class CameraController : MonoBehaviour, IPersistent
     {
         if (ObjectValidator.IsObjectNull(gamePersistentData, "Game persistent data is null"))
             return;
-        
-        gamePersistentData.CameraPosition = transform.position;
+
+        if (_characterManager.Leader)
+            gamePersistentData.CameraPosition = 
+                _characterManager.Leader.transform.position + _initialOffset; // camera destination position
+        else
+            gamePersistentData.CameraPosition = transform.position;
     }
 
     public void LoadData(GamePersistentData gamePersistentData)
