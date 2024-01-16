@@ -18,7 +18,7 @@ public class CameraController : MonoBehaviour, IPersistent
     {
         _initialOffset = transform.position;
 
-        if (_characterManager == null) Debug.LogError("Character manager is null");
+        ObjectValidator.IsObjectNull(_characterManager, "Character manager is null");
     }
 
     private void LateUpdate()
@@ -32,27 +32,28 @@ public class CameraController : MonoBehaviour, IPersistent
         {
             Vector3 leaderPosition = _characterManager.Leader.transform.position;
 
-            Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, leaderPosition + _initialOffset, ref _currentVelecity, _smoothness);
+            Vector3 smoothedPosition =
+                Vector3.SmoothDamp(transform.position, leaderPosition + _initialOffset, ref _currentVelecity, _smoothness);
 
             transform.position = smoothedPosition;
         }
     }
 
     #region IPersistent Implementation
-    public void SaveData(GamePersistentData persistentData)
+    public void SaveData(GamePersistentData gamePersistentData)
     {
-        if (persistentData != null)
-        {
-            persistentData.CameraPosition = transform.position;
-        }
+        if (ObjectValidator.IsObjectNull(gamePersistentData, "Game persistent data is null"))
+            return;
+        
+        gamePersistentData.CameraPosition = transform.position;
     }
 
-    public void LoadData(GamePersistentData persistentData)
+    public void LoadData(GamePersistentData gamePersistentData)
     {
-        if (persistentData != null && persistentData.CameraPosition != null)
-        {
-            transform.position = persistentData.CameraPosition;
-        }
+        if (ObjectValidator.IsObjectNull(gamePersistentData, "Game persistent data is null"))
+            return;
+
+        transform.position = gamePersistentData.CameraPosition;
     }
     #endregion
 }

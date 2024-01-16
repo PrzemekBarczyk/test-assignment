@@ -55,26 +55,36 @@ public class Character : MonoBehaviour, IPersistent
     #region IPersistent Implementation
     public void SaveData(GamePersistentData gamePersistentData)
     {
-        if (gamePersistentData.Characters != null)
-        {
-            CharacterPersistentDataWrapper characterPersistentData = new CharacterPersistentDataWrapper(name, transform.position, transform.rotation);
+        if (ObjectValidator.IsObjectNull(gamePersistentData, "Game persistent data is null"))
+            return;
+        if (ObjectValidator.IsObjectNull(gamePersistentData.Characters, "Characters list is null"))
+            return;
+        
+        CharacterPersistentDataWrapper characterPersistentData = 
+            new CharacterPersistentDataWrapper(name, transform.position, transform.rotation);
 
-            gamePersistentData.Characters.Add(characterPersistentData);
-        }
+        gamePersistentData.Characters.Add(characterPersistentData);
     }
 
     public void LoadData(GamePersistentData gamePersistentData)
     {
-        if (gamePersistentData != null && gamePersistentData.Characters != null)
-        {
-            CharacterPersistentDataWrapper data = gamePersistentData.Characters.Find(c => c.Name == name);
+        if (ObjectValidator.IsObjectNull(gamePersistentData, "Game persistent data is null"))
+            return;
+        if (ObjectValidator.IsObjectNull(gamePersistentData.Characters, "Characters list is null"))
+            return;
 
-            _navMeshAgent.velocity = Vector3.zero;
-            _navMeshAgent.ResetPath();
+        CharacterPersistentDataWrapper data =
+            gamePersistentData.Characters.Find(c => c.Name == name);
 
-            transform.position = data.Position;
-            transform.rotation = data.Rotation;
-        }
+        if (ObjectValidator.IsObjectNull(data, "Can't find character with this name")) return;
+
+        // make sure character won't move
+        _navMeshAgent.velocity = Vector3.zero;
+        _navMeshAgent.ResetPath();
+
+        // load saved position
+        transform.position = data.Position;
+        transform.rotation = data.Rotation;
     }
     #endregion
 }

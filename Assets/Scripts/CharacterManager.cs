@@ -89,34 +89,42 @@ public class CharacterManager : MonoBehaviour, IPersistent
     }
 
     #region IPersistent Implementation
-    public void SaveData(GamePersistentData persistentData)
+    public void SaveData(GamePersistentData gamePersistentData)
     {
-        if (persistentData != null && Leader)
-        {
-            persistentData.LeaderName = Leader.name;
-
-            persistentData.GroupSpeed = _groupSpeed;
-            persistentData.GroupAngularSpeed = _groupAngularSpeed;
-            persistentData.GroupAcceleration = _groupAcceleration;
-        }
+        if (ObjectValidator.IsObjectNull(gamePersistentData, "Game persistent data is null"))
+            return;
+        
+        // save leader if there is any
+        if (Leader) gamePersistentData.LeaderName = Leader.name;
+        
+        // save group params
+        gamePersistentData.GroupSpeed = _groupSpeed;
+        gamePersistentData.GroupAngularSpeed = _groupAngularSpeed;
+        gamePersistentData.GroupAcceleration = _groupAcceleration;
     }
 
-    public void LoadData(GamePersistentData persistentData)
+    public void LoadData(GamePersistentData gamePersistentData)
     {
-        if (persistentData != null && persistentData.LeaderName != null)
-        {
-            DeselectLeader();
+        if (ObjectValidator.IsObjectNull(gamePersistentData, "Game persistent data is null"))
+            return;
 
-            Character loadedLeader = Array.Find(Characters, c => c.name == persistentData.LeaderName);
+        // load group params
+        _groupSpeed = gamePersistentData.GroupSpeed;
+        _groupAngularSpeed = gamePersistentData.GroupAngularSpeed;
+        _groupAcceleration = gamePersistentData.GroupAcceleration;
 
-            if (loadedLeader) SelectLeader(loadedLeader);
+        SetParamsInCharacters();
 
-            _groupSpeed = persistentData.GroupSpeed;
-            _groupAngularSpeed = persistentData.GroupAngularSpeed;
-            _groupAcceleration = persistentData.GroupAcceleration;
+        // load leader
+        DeselectLeader();
 
-            SetParamsInCharacters();
-        }
+        if (ObjectValidator.IsObjectNull(gamePersistentData.LeaderName, "Leader name is null"))
+            return; // by default leader name is empty string -> if null, then sth isn't right
+            
+        Character loadedLeader =
+            Array.Find(Characters, c => c.name == gamePersistentData.LeaderName);
+
+        if (loadedLeader) SelectLeader(loadedLeader);
     }
     #endregion
 }
