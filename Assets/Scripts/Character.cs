@@ -21,7 +21,16 @@ public class Character : MonoBehaviour, IPersistent
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
-    void Update()
+
+    private void OnValidate()
+    {
+        if (!NameValidator.HasUniqueName<Character>(this))
+        {
+            Debug.LogError($"Character \"{gameObject.name}\" must have unique name. Please change it");
+        }
+    }
+
+    private void Update()
     {
         if (_leaderToFollow) _navMeshAgent.SetDestination(_leaderToFollow.position);
     }
