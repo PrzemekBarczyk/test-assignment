@@ -14,13 +14,20 @@ public class Character : MonoBehaviour, IPersistent
 
     private NavMeshAgent _navMeshAgent;
 
-    private Transform _leaderToFollow;
+    private CharacterStateManager _stateManager;
 
-    void Awake()
+    public string CurrentStateName => _stateManager.CurrentState.Name;
+
+    private void Awake()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
+    private void Start()
+    {
+        _stateManager = new CharacterStateManager();
+        _stateManager.ChangeState(new CharacterIdleState());
+    }
 
     private void OnValidate()
     {
@@ -32,7 +39,7 @@ public class Character : MonoBehaviour, IPersistent
 
     private void Update()
     {
-        if (_leaderToFollow) _navMeshAgent.SetDestination(_leaderToFollow.position);
+        _stateManager.CurrentState.UpdateState(_stateManager);
     }
 
     public void SetNavMeshParams(float speed, float angularSpeed, float acceleration)
@@ -44,16 +51,14 @@ public class Character : MonoBehaviour, IPersistent
 
     public void LeadGroup(Vector3 destination)
     {
-        _leaderToFollow = null;
         _navMeshAgent.stoppingDistance = _stoppingDistanceAsLeader;
-        _navMeshAgent.SetDestination(destination);
+        _stateManager.ChangeState(new CharacterLeadState(_navMeshAgent, destination));
     }
 
-    public void FollowLeader(Transform leader)
+    public void FollowLeader(Character leader)
     {
-        _leaderToFollow = leader;
         _navMeshAgent.stoppingDistance = _stoppingDistanceAsFollower;
-        _navMeshAgent.SetDestination(_leaderToFollow.position);
+        _stateManager.ChangeState(new CharacterFollowState(_navMeshAgent, leader));
     }
 
     public void Highlight(bool value)
@@ -88,8 +93,7 @@ public class Character : MonoBehaviour, IPersistent
         if (ObjectValidator.IsObjectNull(data, "Can't find character with this name")) return;
 
         // make sure character won't move
-        _navMeshAgent.velocity = Vector3.zero;
-        _navMeshAgent.ResetPath();
+        _stateManager.ChangeState(new CharacterIdleState());
 
         // load saved position
         transform.position = data.Position;

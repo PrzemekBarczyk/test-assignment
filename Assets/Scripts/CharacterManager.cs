@@ -80,10 +80,7 @@ public class CharacterManager : MonoBehaviour, IPersistent
 
             foreach (Character character in Characters)
             {
-                if (character != Leader)
-                {
-                    character.FollowLeader(Leader.transform);
-                }
+                if (character != Leader) character.FollowLeader(Leader);
             }
         }
     }
